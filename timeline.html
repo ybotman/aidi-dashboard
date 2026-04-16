@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIDI — Event Timeline</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #eee; }
+
+    /* Nav tabs */
+    nav { background: #16213e; display: flex; align-items: center; border-bottom: 2px solid #0f3460; padding: 0 1rem; }
+    nav a { color: #666; text-decoration: none; padding: 0.6rem 1rem; font-size: 0.85rem; border-bottom: 2px solid transparent; }
+    nav a:hover { color: #aaa; }
+    nav a.active { color: #e94560; border-bottom-color: #e94560; }
+    .nav-spacer { flex: 1; }
+    #nav-status { font-size: 0.7rem; color: #555; padding: 0.5rem; }
+
+    /* Summary bar */
+    .summary-bar {
+      display: flex; gap: 1.5rem; padding: 0.75rem 1.5rem; background: #16213e;
+      border-bottom: 1px solid #0f3460; flex-wrap: wrap; align-items: center;
+    }
+    .sum-item { text-align: center; }
+    .sum-val { font-size: 1.4rem; font-weight: bold; }
+    .sum-label { font-size: 0.6rem; color: #888; text-transform: uppercase; }
+    .c-ok { color: #4ade80; } .c-warn { color: #facc15; } .c-bad { color: #f87171; }
+    .c-blue { color: #3b82f6; } .c-purple { color: #8b5cf6; } .c-cyan { color: #06b6d4; }
+    .c-muted { color: #666; }
+
+    /* Filter bar */
+    .filters {
+      display: flex; gap: 0.75rem; padding: 0.5rem 1.5rem; background: #121e38;
+      flex-wrap: wrap; align-items: center; font-size: 0.75rem;
+    }
+    .filter-group { display: flex; align-items: center; gap: 0.3rem; }
+    .filter-group label { color: #888; }
+    .filter-btn {
+      background: #1a1a2e; color: #aaa; border: 1px solid #333; padding: 0.2rem 0.5rem;
+      border-radius: 3px; cursor: pointer; font-size: 0.7rem;
+    }
+    .filter-btn.active { background: #0f3460; border-color: #3b82f6; color: #eee; }
+
+    /* Main scatter area */
+    .scatter-container {
+      position: relative; margin: 0.75rem 1.5rem; background: #0a1628;
+      border-radius: 6px; border: 1px solid #0f3460; overflow: hidden;
+    }
+    .scatter-canvas {
+      position: relative; width: 100%; height: 500px; overflow: hidden;
+    }
+    .dot {
+      position: absolute; width: 7px; height: 7px; border-radius: 50%;
+      transform: translate(-50%, -50%); cursor: pointer; transition: transform 0.15s;
+    }
+    .dot:hover { transform: translate(-50%, -50%) scale(2.5); z-index: 100; }
+    .dot.has-venue { box-shadow: 0 0 0 1.5px rgba(255,255,255,0.5); }
+
+    /* Grid lines and labels */
+    .grid-v { position: absolute; top: 0; bottom: 0; width: 1px; background: #1a2744; pointer-events: none; }
+    .grid-h { position: absolute; left: 0; right: 0; height: 1px; background: #1a2744; pointer-events: none; }
+    .x-label { position: absolute; bottom: 4px; font-size: 0.6rem; color: #444; transform: translateX(-50%); pointer-events: none; }
+    .y-label { position: absolute; left: 4px; font-size: 0.6rem; color: #555; transform: translateY(-50%); pointer-events: none; font-weight: bold; }
+    .week-shade { position: absolute; top: 0; bottom: 0; background: rgba(255,255,255,0.015); pointer-events: none; }
+
+    /* Tooltip */
+    .tooltip {
+      display: none; position: fixed; background: #16213e; border: 1px solid #3b82f6;
+      padding: 0.6rem 0.8rem; border-radius: 6px; font-size: 0.75rem; z-index: 200;
+      max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); pointer-events: none;
+    }
+    .tooltip .tt-title { font-weight: bold; color: #eee; margin-bottom: 0.25rem; }
+    .tooltip .tt-row { color: #aaa; display: flex; gap: 0.5rem; }
+    .tooltip .tt-row span:first-child { color: #666; min-width: 55px; }
+
+    /* Legend */
+    .legend {
+      display: flex; gap: 1.5rem; justify-content: center; padding: 0.5rem;
+      font-size: 0.7rem; color: #888; flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.3rem; }
+    .ldot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    /* Day histogram (bottom bar) */
+    .histogram {
+      display: flex; align-items: flex-end; gap: 1px; height: 60px;
+      margin: 0 1.5rem 0.5rem; background: #0a1628; border-radius: 0 0 6px 6px;
+      padding: 0 2px; border: 1px solid #0f3460; border-top: none;
+    }
+    .hbar {
+      flex: 1; min-width: 2px; border-radius: 2px 2px 0 0; cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .hbar:hover { opacity: 1 !important; }
+
+    /* Gaps section */
+    .gaps-section {
+      padding: 0.5rem 1.5rem; font-size: 0.8rem;
+    }
+    .gaps-section h3 { font-size: 0.7rem; color: #555; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .gap-list { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .gap-chip { background: rgba(248,113,113,0.15); color: #f87171; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.7rem; }
+    .no-gaps { color: #4ade80; }
+
+    /* State breakdown */
+    .state-section { padding: 0.75rem 1.5rem; }
+    .state-section h3 { font-size: 0.7rem; color: #555; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .state-grid { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .state-card {
+      background: #16213e; border: 1px solid #0f3460; border-radius: 4px;
+      padding: 0.4rem 0.6rem; min-width: 80px; text-align: center;
+    }
+    .state-card .st-name { font-size: 0.65rem; color: #888; font-weight: bold; }
+    .state-card .st-val { font-size: 1.1rem; font-weight: bold; }
+    .state-card .st-detail { font-size: 0.55rem; color: #555; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="discovery.html">Discovery</a>
+    <a href="timeline.html" class="active">Timeline</a>
+    <a href="porter.html">Porter</a>
+    <div class="nav-spacer"></div>
+    <span id="nav-status"></span>
+  </nav>
+
+  <!-- Summary -->
+  <div class="summary-bar" id="summary-bar"></div>
+
+  <!-- View toggle -->
+  <div class="filters">
+    <div class="filter-group">
+      <label>View:</label>
+      <button class="filter-btn active" data-view="loaded">When Loaded (look back)</button>
+      <button class="filter-btn" data-view="event">Event Dates (look forward)</button>
+    </div>
+    <div class="filter-group">
+      <label>Color:</label>
+      <button class="filter-btn active" data-color="country">Country</button>
+      <button class="filter-btn" data-color="category">Category</button>
+      <button class="filter-btn" data-color="status">Pipeline</button>
+      <button class="filter-btn" data-color="state">State</button>
+    </div>
+    <div class="filter-group">
+      <label>Show:</label>
+      <button class="filter-btn active" data-show="all">All</button>
+      <button class="filter-btn" data-show="prod">In PROD</button>
+      <button class="filter-btn" data-show="ready">Ready</button>
+      <button class="filter-btn" data-show="pending">Pending</button>
+    </div>
+    <div class="filter-group">
+      <label>Range:</label>
+      <button class="filter-btn" data-range="7">7d</button>
+      <button class="filter-btn" data-range="30">30d</button>
+      <button class="filter-btn active" data-range="90">90d</button>
+      <button class="filter-btn" data-range="120">120d</button>
+      <button class="filter-btn" data-range="365">1yr</button>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend" id="legend"></div>
+
+  <!-- Scatter -->
+  <div class="scatter-container">
+    <div class="scatter-canvas" id="scatter"></div>
+  </div>
+
+  <!-- Day histogram -->
+  <div class="histogram" id="histogram"></div>
+
+  <!-- Gaps -->
+  <div class="gaps-section">
+    <h3>Date Gaps (no events scheduled)</h3>
+    <div class="gap-list" id="gaps"></div>
+  </div>
+
+  <!-- Country breakdown -->
+  <div class="state-section">
+    <h3>Events by Country</h3>
+    <div class="state-grid" id="country-grid"></div>
+  </div>
+
+  <!-- State breakdown -->
+  <div class="state-section">
+    <h3>Events by State/Region</h3>
+    <div class="state-grid" id="state-grid"></div>
+  </div>
+
+  <!-- Tooltip -->
+  <div class="tooltip" id="tooltip"></div>
+
+<script>
+const REFRESH = 60000;
+let DATA = null;
+let viewMode = 'loaded'; // 'loaded' (look back) or 'event' (look forward)
+let colorMode = 'country';
+let showFilter = 'all';
+let rangeFilter = 90;
+let legendFilter = null; // null = show all, or a value like 'US', 'Milonga', 'prod' to filter by legend click
+
+const STATUS_COLORS = { prod: '#4ade80', loaded: '#facc15', test: '#facc15', ready: '#3b82f6', pending: '#8b5cf6', skip: '#555' };
+const CAT_COLORS = { Milonga: '#e94560', Practica: '#3b82f6', Workshop: '#facc15', Festival: '#06b6d4', Marathon: '#8b5cf6', Encuentro: '#f97316', Class: '#888', Unknown: '#555' };
+const COUNTRY_COLORS = { US: '#3b82f6', AU: '#f97316', NZ: '#06b6d4', TH: '#ec4899', JP: '#e94560', TW: '#facc15', UK: '#8b5cf6', FR: '#14b8a6', AR: '#4ade80', BR: '#84cc16', DE: '#f43f5e', SG: '#22d3ee', PT: '#a855f7', GR: '#fb923c', KR: '#6366f1', NL: '#f97316', ES: '#e94560', TR: '#facc15', IL: '#06b6d4', PL: '#8b5cf6', MX: '#14b8a6', CA: '#84cc16', RU: '#f43f5e' };
+const STATE_COLORS = {};
+const STATE_PALETTE = ['#e94560','#3b82f6','#4ade80','#facc15','#8b5cf6','#06b6d4','#f97316','#ec4899','#14b8a6','#a855f7','#f43f5e','#22d3ee','#84cc16','#fb923c','#6366f1'];
+
+async function load() {
+  try {
+    const r = await fetch('data.json?t=' + Date.now());
+    DATA = await r.json();
+    render();
+  } catch (e) { console.error(e); }
+}
+
+function render() {
+  if (!DATA?.booker) return;
+  renderSummary();
+  renderLegend();
+  renderScatter();
+  renderHistogram();
+  renderGaps();
+  renderCountries();
+  renderStates();
+
+  const ts = new Date(DATA.generated_at);
+  const age = Math.round((Date.now() - ts.getTime()) / 60000);
+  document.getElementById('nav-status').textContent = `Data: ${age}m ago`;
+}
+
+// ── Summary bar ──
+
+function renderSummary() {
+  const f = DATA.booker.funnel;
+  document.getElementById('summary-bar').innerHTML = `
+    <div class="sum-item"><div class="sum-val c-blue">${f.future}</div><div class="sum-label">Future Events</div></div>
+    <div class="sum-item"><div class="sum-val c-ok">${f.in_prod}</div><div class="sum-label">In PROD</div></div>
+    <div class="sum-item"><div class="sum-val c-purple">${f.ready_for_porter}</div><div class="sum-label">Ready to Load</div></div>
+    <div class="sum-item"><div class="sum-val c-bad">${f.missing_venue}</div><div class="sum-label">No Venue</div></div>
+    <div class="sum-item"><div class="sum-val c-muted">${f.skipped_class}</div><div class="sum-label">Class (skip)</div></div>
+    <div class="sum-item"><div class="sum-val c-muted">${DATA.booker.scatter.length}</div><div class="sum-label">Plotted</div></div>
+  `;
+}
+
+// ── Legend ──
+
+function renderLegend() {
+  const el = document.getElementById('legend');
+
+  function legendBtn(key, color, label) {
+    const active = legendFilter === key;
+    const style = active
+      ? `background:${color};color:#000;padding:0.15rem 0.5rem;border-radius:3px;cursor:pointer;font-weight:bold`
+      : `cursor:pointer;opacity:${legendFilter && legendFilter !== key ? '0.3' : '1'}`;
+    return `<span class="legend-item" style="${style}" data-legend="${esc(key)}"><span class="ldot" style="background:${color}"></span>${label || key}</span>`;
+  }
+
+  let items = '';
+  if (colorMode === 'country') {
+    // Get all countries from current data
+    const events = viewMode === 'loaded' ? (DATA.booker.loadedEvents || []) : (DATA.booker.scatter || []);
+    const countryCounts = {};
+    for (const e of events) { const c = e.country || '??'; countryCounts[c] = (countryCounts[c] || 0) + 1; }
+    const sorted = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+    items = sorted.map(([c, n]) => legendBtn(c, COUNTRY_COLORS[c] || '#555', `${c} (${n})`)).join('');
+  } else if (colorMode === 'status' || colorMode === 'pipeline') {
+    items = Object.entries(STATUS_COLORS).filter(([k]) => k !== 'test').map(([k, v]) => legendBtn(k, v)).join('');
+  } else if (colorMode === 'category') {
+    items = Object.entries(CAT_COLORS).map(([k, v]) => legendBtn(k, v)).join('');
+  } else {
+    // State — build from data
+    const events = viewMode === 'loaded' ? (DATA.booker.loadedEvents || []) : (DATA.booker.scatter || []);
+    const stateCounts = {};
+    for (const e of events) { const s = e.state || e.country || '??'; stateCounts[s] = (stateCounts[s] || 0) + 1; }
+    const sorted = Object.entries(stateCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+    sorted.forEach(([s]) => { if (!STATE_COLORS[s]) STATE_COLORS[s] = STATE_PALETTE[Object.keys(STATE_COLORS).length % STATE_PALETTE.length]; });
+    items = sorted.map(([s, n]) => legendBtn(s, STATE_COLORS[s] || '#555', `${s} (${n})`)).join('');
+  }
+
+  const clearBtn = legendFilter ? '<span class="legend-item" style="cursor:pointer;color:#f87171;margin-left:0.5rem;" data-legend="__clear__">[clear filter]</span>' : '';
+  el.innerHTML = items + clearBtn + '<span class="legend-item" style="color:#444;margin-left:0.5rem">click to filter | ring = venue</span>';
+
+  // Click handlers
+  el.querySelectorAll('[data-legend]').forEach(item => {
+    item.addEventListener('click', () => {
+      const val = item.dataset.legend;
+      if (val === '__clear__' || legendFilter === val) {
+        legendFilter = null;
+      } else {
+        legendFilter = val;
+      }
+      renderLegend();
+      renderScatter();
+    });
+  });
+}
+
+// ── Scatter ──
+
+function renderScatter() {
+  const el = document.getElementById('scatter');
+  const isLoaded = viewMode === 'loaded';
+
+  // Update scatter container title to show which view is active
+  const container = el.parentElement;
+  let titleEl = container.querySelector('.scatter-view-label');
+  if (!titleEl) {
+    titleEl = document.createElement('div');
+    titleEl.className = 'scatter-view-label';
+    titleEl.style.cssText = 'position:absolute;top:4px;right:8px;font-size:0.6rem;color:#555;z-index:10;';
+    container.appendChild(titleEl);
+  }
+  titleEl.textContent = isLoaded ? 'Y = Country | X = Load Date (right = today)' : 'Y = State | X = Event Date (right = future)';
+  const now = Date.now();
+  const rangeDays = rangeFilter;
+  const rangeMs = rangeDays * 86400000;
+
+  // Pick data source
+  let events;
+  if (isLoaded) {
+    // Look BACK: loadedEvents, X = when loaded (created_at), going into past
+    events = (DATA.booker.loadedEvents || []).filter(e => {
+      const dt = new Date(e.loaded_at).getTime();
+      return dt > now - rangeMs && dt <= now;
+    });
+    if (showFilter !== 'all') events = events.filter(e => e.load_status === showFilter);
+  } else {
+    // Look FORWARD: scatter, X = event date, going into future
+    events = (DATA.booker.scatter || []).filter(e => {
+      const dt = new Date(e.start_dt).getTime();
+      return dt > now && dt < now + rangeMs;
+    });
+    if (showFilter !== 'all') events = events.filter(e => e.pipeline_status === showFilter);
+  }
+
+  // Apply legend filter
+  if (legendFilter) {
+    events = events.filter(e => {
+      if (colorMode === 'country') return (e.country || '??') === legendFilter;
+      if (colorMode === 'category') return (e.category || 'Unknown') === legendFilter;
+      if (colorMode === 'status' || colorMode === 'pipeline') return (isLoaded ? e.load_status : e.pipeline_status) === legendFilter;
+      if (colorMode === 'state') return (e.state || e.country || '??') === legendFilter;
+      return true;
+    });
+  }
+
+  if (!events.length) { el.innerHTML = '<div style="color:#555;text-align:center;padding:4rem;">No events in range' + (legendFilter ? ' for "' + legendFilter + '"' : '') + '</div>'; return; }
+
+  // Y axis: country for loaded view, state for event view
+  const yFn = isLoaded ? (e => e.country || '??') : (e => e.state || e.country || '??');
+  const yGroups = [...new Set(events.map(yFn))].sort();
+  yGroups.forEach((s, i) => { if (!STATE_COLORS[s]) STATE_COLORS[s] = STATE_PALETTE[i % STATE_PALETTE.length]; });
+
+  const bandH = 100 / Math.max(yGroups.length, 1);
+  const yIdx = {};
+  yGroups.forEach((s, i) => yIdx[s] = i);
+
+  let html = '';
+
+  // Grid interval: daily for <=30d, weekly for >30d
+  const gridStep = rangeDays <= 30 ? 1 : 7;
+  const labelStep = rangeDays <= 7 ? 1 : rangeDays <= 30 ? 3 : 7;
+  const shadeStep = rangeDays <= 30 ? 2 : 14;
+
+  // Alternating shading
+  for (let d = 0; d < rangeDays; d += shadeStep) {
+    const x1 = (d / rangeDays) * 100;
+    const x2 = Math.min(((d + shadeStep / 2) / rangeDays) * 100, 100);
+    html += `<div class="week-shade" style="left:${x1}%;width:${x2-x1}%"></div>`;
+  }
+
+  // Vertical grid lines + date labels
+  for (let d = 0; d <= rangeDays; d += gridStep) {
+    const x = isLoaded ? (1 - (d / rangeDays)) * 100 : (d / rangeDays) * 100;
+    html += `<div class="grid-v" style="left:${x}%"></div>`;
+    // Only show label at labelStep intervals
+    if (d % labelStep === 0) {
+      const dayOffset = isLoaded ? -d : d;
+      const dt = new Date(now + dayOffset * 86400000);
+      html += `<div class="x-label" style="left:${x}%">${dt.getMonth()+1}/${dt.getDate()}</div>`;
+    }
+  }
+
+  // Y axis labels + grid
+  yGroups.forEach((s, i) => {
+    const y = (i + 0.5) * bandH;
+    html += `<div class="y-label" style="top:${y}%">${s}</div>`;
+    if (i > 0) html += `<div class="grid-h" style="top:${i * bandH}%"></div>`;
+  });
+
+  // Dots
+  for (const e of events) {
+    let x;
+    if (isLoaded) {
+      // X = how far back (right = now, left = oldest)
+      const dt = new Date(e.loaded_at).getTime();
+      const age = now - dt;
+      x = (1 - age / rangeMs) * 100; // right = recent
+    } else {
+      const dt = new Date(e.start_dt).getTime();
+      x = ((dt - now) / rangeMs) * 100;
+    }
+
+    const yKey = yFn(e);
+    const yBase = (yIdx[yKey] || 0) * bandH;
+    const seed = isLoaded ? (e.loaded_at + e.title) : (e.start_dt + e.title);
+    const y = yBase + (seededRandom(seed) * 0.6 + 0.2) * bandH;
+
+    let color;
+    const status = isLoaded ? e.load_status : e.pipeline_status;
+    if (colorMode === 'country') color = COUNTRY_COLORS[e.country] || STATE_COLORS[e.country || '??'] || '#555';
+    else if (colorMode === 'status' || colorMode === 'pipeline') color = STATUS_COLORS[status] || '#555';
+    else if (colorMode === 'category') color = CAT_COLORS[e.category] || '#555';
+    else if (colorMode === 'state') color = STATE_COLORS[yKey] || '#555';
+    else color = '#555';
+
+    const venueClass = e.has_venue ? 'has-venue' : '';
+    const dayLabel = isLoaded ? (e.loaded_day || '') : (e.day || '');
+    const statusLabel = isLoaded ? (e.load_status || '') : (e.pipeline_status || '');
+    const fbUrl = e.fb_url || '';
+    const attrs = `data-title="${esc(e.title)}" data-city="${esc(e.city||'')}" data-state="${esc(e.state||e.country||'')}" data-day="${dayLabel}" data-cat="${esc(e.category)}" data-status="${statusLabel}" data-venue="${e.has_venue?'yes':'no'}" data-url="${esc(fbUrl)}" data-group="${esc(e.group_name||'')}" data-vname="${esc(e.venue_name||'')}"`;
+
+    html += `<div class="dot ${venueClass}" style="left:${x}%;top:${y}%;background:${color}" ${attrs}></div>`;
+  }
+
+  el.innerHTML = html;
+
+  // Tooltip + click handlers
+  el.querySelectorAll('.dot').forEach(dot => {
+    dot.addEventListener('mouseenter', (ev) => showTooltip(ev, dot));
+    dot.addEventListener('mouseleave', hideTooltip);
+    dot.addEventListener('click', () => {
+      const url = dot.dataset.url;
+      if (url) window.open(url, '_blank');
+    });
+  });
+}
+
+// ── Histogram (events per day bar — aligned with scatter view) ──
+
+function renderHistogram() {
+  const el = document.getElementById('histogram');
+  const isLoaded = viewMode === 'loaded';
+  const now = Date.now();
+  const rangeDays = rangeFilter;
+
+  if (isLoaded) {
+    // LOOK BACK: count loaded events per day from loadedEvents
+    const events = DATA.booker.loadedEvents || [];
+    const dayCounts = {};
+    for (const e of events) {
+      const day = e.loaded_day;
+      if (!day) continue;
+      if (!dayCounts[day]) dayCounts[day] = { count: 0, countries: new Set() };
+      dayCounts[day].count++;
+      dayCounts[day].countries.add(e.country || '??');
+    }
+
+    const max = Math.max(...Object.values(dayCounts).map((d) => d.count), 1);
+    let html = '';
+
+    for (let i = rangeDays - 1; i >= 0; i--) {
+      const dt = new Date(now - i * 86400000);
+      const key = dt.toISOString().slice(0, 10);
+      const d = dayCounts[key];
+      const count = d?.count || 0;
+      const h = Math.max((count / max) * 100, count > 0 ? 3 : 0);
+      const countries = d ? d.countries.size : 0;
+      const color = count > 0 ? (countries > 3 ? '#4ade80' : countries > 1 ? '#3b82f6' : '#8b5cf6') : '#0f3460';
+      const title = `${key}: ${count} loaded (${countries} countries)`;
+      html += `<div class="hbar" style="height:${h}%;background:${color};opacity:${count > 0 ? 0.7 : 0.2}" title="${title}"></div>`;
+    }
+    el.innerHTML = html;
+  } else {
+    // LOOK FORWARD: events scheduled per day
+    const days = DATA.booker.eventsByDay || [];
+    if (!days.length) { el.innerHTML = ''; return; }
+
+    const dayMap = {};
+    for (const d of days) dayMap[d.day] = d;
+    const max = Math.max(...days.map(d => d.events || 0), 1);
+    let html = '';
+
+    for (let i = 0; i < rangeDays; i++) {
+      const dt = new Date(now + i * 86400000);
+      const key = dt.toISOString().slice(0, 10);
+      const d = dayMap[key];
+      const count = d?.events || 0;
+      const h = Math.max((count / max) * 100, count > 0 ? 3 : 0);
+      const hasVenue = d ? Math.round((d.with_venue / Math.max(d.events, 1)) * 100) : 0;
+      let color = '#0f3460';
+      if (count > 0) color = hasVenue >= 80 ? '#4ade80' : hasVenue >= 40 ? '#facc15' : '#f87171';
+      const title = `${key}: ${count} events (${d?.cities || 0} cities, ${hasVenue}% venue)`;
+      html += `<div class="hbar" style="height:${h}%;background:${color};opacity:${count > 0 ? 0.7 : 0.2}" title="${title}"></div>`;
+    }
+    el.innerHTML = html;
+  }
+}
+
+// ── Gaps ──
+
+function renderGaps() {
+  const el = document.getElementById('gaps');
+  const isLoaded = viewMode === 'loaded';
+  const now = Date.now();
+
+  // Build set of days that have data
+  let daySet;
+  if (isLoaded) {
+    const events = DATA.booker.loadedEvents || [];
+    daySet = new Set(events.map(e => e.loaded_day).filter(Boolean));
+  } else {
+    daySet = new Set((DATA.booker.eventsByDay || []).map(d => d.day));
+  }
+
+  const gaps = [];
+  let gapStart = null;
+
+  for (let i = 0; i < rangeFilter; i++) {
+    const offset = isLoaded ? -i : i;
+    const key = new Date(now + offset * 86400000).toISOString().slice(0, 10);
+    if (!daySet.has(key)) {
+      if (!gapStart) gapStart = key;
+    } else {
+      if (gapStart) {
+        const prevOffset = isLoaded ? -(i-1) : (i-1);
+        const prev = new Date(now + prevOffset * 86400000).toISOString().slice(0, 10);
+        const gapDays = Math.abs(Math.round((new Date(prev).getTime() - new Date(gapStart).getTime()) / 86400000)) + 1;
+        gaps.push({ start: gapStart, end: prev, days: gapDays });
+        gapStart = null;
+      }
+    }
+  }
+  if (gapStart) gaps.push({ start: gapStart, end: '...', days: '?' });
+
+  if (gaps.length === 0) {
+    const label = isLoaded ? `No load gaps in last ${rangeFilter} days` : `No event gaps in next ${rangeFilter} days`;
+    el.innerHTML = `<span class="no-gaps">${label}</span>`;
+  } else {
+    el.innerHTML = gaps.map(g =>
+      `<span class="gap-chip">${g.start.slice(5)} ${g.days > 1 ? '(' + g.days + 'd)' : ''}</span>`
+    ).join('');
+  }
+}
+
+// ── Country cards ──
+
+function renderCountries() {
+  const countries = DATA.booker?.loadByCountry || [];
+  const el = document.getElementById('country-grid');
+  if (!el || !countries.length) return;
+
+  el.innerHTML = countries.map(c => {
+    const pct = c.events > 0 ? Math.round((c.in_prod / c.events) * 100) : 0;
+    const cls = pct >= 80 ? 'c-ok' : pct >= 40 ? 'c-warn' : 'c-bad';
+    const dotColor = COUNTRY_COLORS[c.country] || '#555';
+    return `<div class="state-card" style="border-left: 3px solid ${dotColor}">
+      <div class="st-name">${c.country}</div>
+      <div class="st-val c-blue">${c.events}</div>
+      <div class="st-detail">${c.cities}c ${c.venues}v <span class="${cls}">${c.in_prod}p</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ── State cards ──
+
+function renderStates() {
+  const states = DATA.booker.stateRollup || [];
+  document.getElementById('state-grid').innerHTML = states.slice(0, 20).map(s => {
+    const pct = s.events > 0 ? Math.round((s.in_prod / s.events) * 100) : 0;
+    const cls = pct >= 80 ? 'c-ok' : pct >= 40 ? 'c-warn' : 'c-bad';
+    return `<div class="state-card">
+      <div class="st-name">${s.region}</div>
+      <div class="st-val c-blue">${s.events}</div>
+      <div class="st-detail">${s.unique_venues}v | <span class="${cls}">${s.in_prod}p</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ── Tooltip ──
+
+function showTooltip(ev, dot) {
+  const tt = document.getElementById('tooltip');
+  const hasLink = dot.dataset.url && dot.dataset.url !== '';
+  tt.innerHTML = `
+    <div class="tt-title">${dot.dataset.title}</div>
+    <div class="tt-row"><span>Date:</span> ${dot.dataset.day}</div>
+    <div class="tt-row"><span>City:</span> ${dot.dataset.city}${dot.dataset.state ? ', ' + dot.dataset.state : ''}</div>
+    <div class="tt-row"><span>Category:</span> ${dot.dataset.cat}</div>
+    <div class="tt-row"><span>Status:</span> ${dot.dataset.status}</div>
+    ${dot.dataset.vname ? `<div class="tt-row"><span>Venue:</span> ${dot.dataset.vname}</div>` : ''}
+    ${dot.dataset.group ? `<div class="tt-row"><span>Source:</span> ${dot.dataset.group}</div>` : ''}
+    ${hasLink ? '<div style="color:#3b82f6;font-size:0.65rem;margin-top:0.3rem;">Click to open FB event &rarr;</div>' : '<div style="color:#555;font-size:0.65rem;margin-top:0.3rem;">No FB link</div>'}
+  `;
+  tt.style.display = 'block';
+  tt.style.left = (ev.clientX + 12) + 'px';
+  tt.style.top = (ev.clientY - 10) + 'px';
+}
+
+function hideTooltip() { document.getElementById('tooltip').style.display = 'none'; }
+
+// ── Filters ──
+
+document.querySelectorAll('.filter-btn[data-view]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-view]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    viewMode = btn.dataset.view;
+    renderLegend();
+    renderScatter();
+    renderHistogram();
+    renderGaps();
+  });
+});
+
+document.querySelectorAll('.filter-btn[data-color]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-color]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    colorMode = btn.dataset.color;
+    legendFilter = null; // reset filter when switching color mode
+    renderLegend();
+    renderScatter();
+  });
+});
+
+document.querySelectorAll('.filter-btn[data-show]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-show]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showFilter = btn.dataset.show;
+    renderScatter();
+  });
+});
+
+document.querySelectorAll('.filter-btn[data-range]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-range]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    rangeFilter = parseInt(btn.dataset.range);
+    renderScatter();
+    renderHistogram();
+    renderGaps();
+  });
+});
+
+// ── Helpers ──
+
+function esc(s) { return (s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+// Deterministic random based on string (so dots don't jump on refresh)
+function seededRandom(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) { h = ((h << 5) - h + str.charCodeAt(i)) | 0; }
+  return (Math.abs(h) % 1000) / 1000;
+}
+
+// ── Boot ──
+load();
+setInterval(load, REFRESH);
+</script>
+</body>
+</html>

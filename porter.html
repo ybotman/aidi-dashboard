@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIDI — Porter (MongoDB Loader)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #eee; font-size: 14px; }
+
+    nav { background: #16213e; display: flex; align-items: center; border-bottom: 2px solid #0f3460; padding: 0 1rem; }
+    nav a { color: #666; text-decoration: none; padding: 0.6rem 1rem; font-size: 0.85rem; border-bottom: 2px solid transparent; }
+    nav a:hover { color: #aaa; }
+    nav a.active { color: #e94560; border-bottom-color: #e94560; }
+    .nav-spacer { flex: 1; }
+    #nav-status { font-size: 0.7rem; color: #555; padding: 0.5rem; }
+
+    .page { padding: 0.75rem 1.5rem; }
+    .panel { background: #16213e; border-radius: 6px; padding: 0.75rem 1rem; border: 1px solid #0f3460; margin-bottom: 0.75rem; }
+    .panel h2 { font-size: 0.85rem; color: #e94560; margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 1px solid #0f3460; }
+    .panel h3 { font-size: 0.7rem; color: #555; text-transform: uppercase; margin: 0.6rem 0 0.3rem; }
+
+    .c-ok { color: #4ade80; } .c-warn { color: #facc15; } .c-bad { color: #f87171; }
+    .c-blue { color: #3b82f6; } .c-purple { color: #8b5cf6; } .c-muted { color: #666; }
+
+    /* Big number cards */
+    .big-numbers { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .big-card { background: #1a1a2e; border-radius: 6px; padding: 1rem 1.5rem; text-align: center; min-width: 120px; flex: 1; }
+    .big-val { font-size: 2rem; font-weight: bold; }
+    .big-lbl { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+
+    /* Funnel */
+    .funnel { display: flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 1rem; flex-wrap: wrap; }
+    .funnel-step { text-align: center; padding: 0.5rem 1rem; background: #1a1a2e; border-radius: 6px; min-width: 100px; }
+    .funnel-val { font-size: 1.5rem; font-weight: bold; }
+    .funnel-lbl { font-size: 0.6rem; color: #888; text-transform: uppercase; }
+    .funnel-arrow { color: #333; font-size: 1.2rem; }
+
+    /* Bar charts */
+    .chart-area { display: flex; flex-direction: column; gap: 0.2rem; }
+    .chart-row { display: flex; align-items: center; gap: 0.4rem; }
+    .chart-label { width: 55px; font-size: 0.65rem; color: #888; text-align: right; }
+    .chart-bars { flex: 1; display: flex; height: 18px; border-radius: 2px; overflow: hidden; background: #0a1628; }
+    .bar-prod { background: #4ade80; }
+    .bar-events { background: #3b82f6; }
+    .bar-venues { background: #8b5cf6; }
+    .chart-count { width: 50px; font-size: 0.7rem; font-weight: bold; text-align: right; }
+
+    .legend { display: flex; gap: 1rem; justify-content: center; font-size: 0.65rem; color: #888; margin-top: 0.3rem; }
+    .ldot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.2rem; vertical-align: middle; }
+
+    /* Region table */
+    .region-row { display: grid; grid-template-columns: 1.5fr 0.6fr 0.6fr 0.6fr 0.6fr; gap: 0.3rem; padding: 0.3rem 0; border-bottom: 1px solid #0a1628; font-size: 0.8rem; }
+    .region-row .num { text-align: right; font-weight: bold; }
+    .table-header { font-size: 0.6rem; color: #555; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid #0f3460; padding-bottom: 0.3rem; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 1000px) { .two-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="discovery.html">Discovery</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="porter.html" class="active">Porter</a>
+    <div class="nav-spacer"></div>
+    <span id="nav-status"></span>
+  </nav>
+
+  <div class="page">
+    <!-- Big numbers -->
+    <div class="big-numbers" id="big-numbers"></div>
+
+    <!-- Load funnel -->
+    <section class="panel">
+      <h2>Event Load Funnel (Future Events Only)</h2>
+      <div class="funnel" id="funnel"></div>
+    </section>
+
+    <div class="two-col">
+      <!-- Load history -->
+      <section class="panel">
+        <h2>Load History (Events/Day &rarr; PROD)</h2>
+        <div class="chart-area" id="history-chart"></div>
+      </section>
+
+      <!-- Discovery rate -->
+      <section class="panel">
+        <h2>Discovery Rate (Events Added/Day)</h2>
+        <div class="chart-area" id="discovery-chart"></div>
+      </section>
+    </div>
+
+    <div class="two-col">
+      <!-- By region -->
+      <section class="panel">
+        <h2>Events in PROD by City</h2>
+        <div class="table-header region-row">
+          <span>City</span><span class="num">Events</span><span class="num">In PROD</span><span class="num">Venues</span><span class="num">% Loaded</span>
+        </div>
+        <div id="region-table"></div>
+      </section>
+
+      <!-- By state -->
+      <section class="panel">
+        <h2>Events by State/Country</h2>
+        <div class="chart-area" id="state-chart"></div>
+      </section>
+    </div>
+
+    <!-- Venues & Organizers -->
+    <section class="panel">
+      <h2>Data Assets</h2>
+      <div class="big-numbers" id="assets"></div>
+    </section>
+  </div>
+
+<script>
+const REFRESH = 60000;
+let DATA = null;
+
+async function load() {
+  try { DATA = await (await fetch('data.json?t=' + Date.now())).json(); render(); }
+  catch (e) { console.error(e); }
+}
+
+function render() {
+  if (!DATA?.booker) return;
+  const ts = new Date(DATA.generated_at);
+  document.getElementById('nav-status').textContent = `Data: ${Math.round((Date.now() - ts.getTime()) / 60000)}m ago`;
+
+  const f = DATA.booker.funnel;
+
+  // Big numbers
+  document.getElementById('big-numbers').innerHTML = `
+    <div class="big-card"><div class="big-val c-ok">${f.in_prod}</div><div class="big-lbl">Events in PROD</div></div>
+    <div class="big-card"><div class="big-val c-purple">${f.ready_for_porter}</div><div class="big-lbl">Ready to Load</div></div>
+    <div class="big-card"><div class="big-val c-blue">${f.future}</div><div class="big-lbl">Future Events</div></div>
+    <div class="big-card"><div class="big-val c-bad">${f.missing_venue}</div><div class="big-lbl">Blocked (No Venue)</div></div>
+  `;
+
+  // Funnel
+  document.getElementById('funnel').innerHTML = `
+    <div class="funnel-step"><div class="funnel-val c-muted">${f.total_discovered}</div><div class="funnel-lbl">Discovered</div></div>
+    <div class="funnel-arrow">&rarr;</div>
+    <div class="funnel-step"><div class="funnel-val c-blue">${f.future}</div><div class="funnel-lbl">Future</div></div>
+    <div class="funnel-arrow">&rarr;</div>
+    <div class="funnel-step"><div class="funnel-val c-blue">${f.future_with_venue}</div><div class="funnel-lbl">With Venue</div></div>
+    <div class="funnel-arrow">&rarr;</div>
+    <div class="funnel-step"><div class="funnel-val c-purple">${f.ready_for_porter}</div><div class="funnel-lbl">Ready</div></div>
+    <div class="funnel-arrow">&rarr;</div>
+    <div class="funnel-step" style="border:1px solid #4ade80"><div class="funnel-val c-ok">${f.in_prod}</div><div class="funnel-lbl">In PROD</div></div>
+    <div style="margin-left:1rem;font-size:0.7rem;color:#666">
+      <div>&darr; ${f.skipped_class} class-only</div>
+      <div>&darr; ${f.skipped_other} skipped</div>
+      <div>&darr; ${f.missing_venue} no venue</div>
+    </div>
+  `;
+
+  // Load history
+  const hist = DATA.booker.porterHistory || [];
+  if (hist.length > 0) {
+    const max = Math.max(...hist.map(h => h.loaded_prod || 0), 1);
+    document.getElementById('history-chart').innerHTML =
+      hist.slice(0, 14).reverse().map(h => {
+        const w = ((h.loaded_prod || 0) / max) * 100;
+        return `<div class="chart-row">
+          <span class="chart-label">${(h.day || '').slice(5)}</span>
+          <div class="chart-bars"><div class="bar-prod" style="width:${w}%"></div></div>
+          <span class="chart-count c-ok">${h.loaded_prod || 0}</span>
+        </div>`;
+      }).join('') + `<div class="legend"><span><span class="ldot" style="background:#4ade80"></span> Loaded to PROD</span></div>`;
+  }
+
+  // Discovery rate
+  const tl = DATA.booker.eventTimeline || [];
+  if (tl.length > 0) {
+    const max = Math.max(...tl.map(t => t.future_added || 0), 1);
+    document.getElementById('discovery-chart').innerHTML =
+      tl.filter(t => (t.future_added || 0) > 0).slice(0, 14).reverse().map(t => {
+        const w = ((t.future_added || 0) / max) * 100;
+        return `<div class="chart-row">
+          <span class="chart-label">${(t.day || '').slice(5)}</span>
+          <div class="chart-bars"><div class="bar-events" style="width:${w}%"></div></div>
+          <span class="chart-count c-blue">+${t.future_added || 0}</span>
+        </div>`;
+      }).join('') + `<div class="legend"><span><span class="ldot" style="background:#3b82f6"></span> Future events discovered</span></div>`;
+  }
+
+  // Regions
+  const regions = DATA.booker.regions || [];
+  document.getElementById('region-table').innerHTML = regions.filter(r => r.prod_synced > 0).slice(0, 20).map(r => {
+    const pct = r.events > 0 ? Math.round((r.prod_synced / r.events) * 100) : 0;
+    const cls = pct >= 80 ? 'c-ok' : pct >= 40 ? 'c-warn' : 'c-bad';
+    return `<div class="region-row">
+      <span>${r.city}${r.state ? ', ' + r.state : ''}</span>
+      <span class="num c-blue">${r.events}</span>
+      <span class="num c-ok">${r.prod_synced}</span>
+      <span class="num c-purple">${r.venues || 0}</span>
+      <span class="num ${cls}">${pct}%</span>
+    </div>`;
+  }).join('');
+
+  // State bars
+  const states = DATA.booker.stateRollup || [];
+  if (states.length > 0) {
+    const max = Math.max(...states.map(s => s.events), 1);
+    document.getElementById('state-chart').innerHTML = states.slice(0, 15).map(s => {
+      const evW = ((s.events || 0) / max) * 100;
+      const prodW = ((s.in_prod || 0) / max) * 100;
+      return `<div class="chart-row">
+        <span class="chart-label" style="font-weight:bold">${s.region}</span>
+        <div class="chart-bars">
+          <div class="bar-prod" style="width:${prodW}%"></div>
+          <div class="bar-events" style="width:${evW - prodW}%"></div>
+        </div>
+        <span class="chart-count">${s.events} <span class="c-ok">(${s.in_prod}p)</span></span>
+      </div>`;
+    }).join('') + `<div class="legend"><span><span class="ldot" style="background:#4ade80"></span> In PROD</span><span><span class="ldot" style="background:#3b82f6"></span> Discovered</span></div>`;
+  }
+
+  // Assets
+  const v = DATA.booker.venues || {};
+  const o = DATA.booker.organizers || {};
+  document.getElementById('assets').innerHTML = `
+    <div class="big-card"><div class="big-val c-muted">${v.total || 0}</div><div class="big-lbl">Venues</div></div>
+    <div class="big-card"><div class="big-val c-ok">${v.geocoded || 0}</div><div class="big-lbl">Geocoded</div></div>
+    <div class="big-card"><div class="big-val c-muted">${o.total || 0}</div><div class="big-lbl">Organizers</div></div>
+    <div class="big-card"><div class="big-val c-blue">${o.with_fb || 0}</div><div class="big-lbl">With FB Profile</div></div>
+    <div class="big-card"><div class="big-val c-ok">${o.contacted || 0}</div><div class="big-lbl">Contacted</div></div>
+  `;
+}
+
+load();
+setInterval(load, REFRESH);
+</script>
+</body>
+</html>

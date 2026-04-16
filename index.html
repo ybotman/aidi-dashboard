@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIDI Pipeline Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav style="background:#16213e;display:flex;align-items:center;border-bottom:2px solid #0f3460;padding:0 1rem;">
+    <a href="index.html" style="color:#e94560;text-decoration:none;padding:0.6rem 1rem;font-size:0.85rem;border-bottom:2px solid #e94560;">Overview</a>
+    <a href="discovery.html" style="color:#666;text-decoration:none;padding:0.6rem 1rem;font-size:0.85rem;border-bottom:2px solid transparent;">Discovery</a>
+    <a href="timeline.html" style="color:#666;text-decoration:none;padding:0.6rem 1rem;font-size:0.85rem;border-bottom:2px solid transparent;">Timeline</a>
+    <a href="porter.html" style="color:#666;text-decoration:none;padding:0.6rem 1rem;font-size:0.85rem;border-bottom:2px solid transparent;">Porter</a>
+  </nav>
+  <header>
+    <div class="header-left">
+      <h1>AIDI Pipeline Dashboard</h1>
+      <span id="health-badge" class="health-badge">--</span>
+    </div>
+    <div id="status">
+      <span id="last-updated">Loading...</span>
+      <br>
+      <span id="db-status"></span>
+    </div>
+  </header>
+
+  <!-- ═══ PIPELINE FUNNEL (top banner) ═══ -->
+  <section id="funnel-section" class="panel funnel-panel">
+    <div class="funnel-flow">
+      <div class="funnel-step">
+        <div class="funnel-value" id="f-groups">--</div>
+        <div class="funnel-label">Groups</div>
+        <div class="funnel-sub" id="f-groups-sub"></div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step">
+        <div class="funnel-value" id="f-discovered">--</div>
+        <div class="funnel-label">Events Found</div>
+        <div class="funnel-sub" id="f-discovered-sub"></div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step">
+        <div class="funnel-value" id="f-future">--</div>
+        <div class="funnel-label">Future Events</div>
+        <div class="funnel-sub" id="f-future-sub"></div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step">
+        <div class="funnel-value" id="f-ready">--</div>
+        <div class="funnel-label">Ready for Porter</div>
+        <div class="funnel-sub" id="f-ready-sub"></div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step step-prod">
+        <div class="funnel-value" id="f-prod">--</div>
+        <div class="funnel-label">In PROD</div>
+      </div>
+    </div>
+    <div class="funnel-drops">
+      <span id="f-drop-class"></span>
+      <span id="f-drop-venue"></span>
+      <span id="f-drop-skipped"></span>
+      <span id="f-drop-past"></span>
+    </div>
+  </section>
+
+  <!-- ═══ ALERTS BAR ═══ -->
+  <section id="alerts-bar" class="alerts-bar"></section>
+
+  <!-- ═══ MAIN GRID ═══ -->
+  <main class="main-grid">
+
+    <!-- LEFT: Groups + Regions -->
+    <div class="col-left">
+      <!-- Group Tiers -->
+      <section class="panel">
+        <h2>FB Groups <span class="badge" id="group-total">--</span></h2>
+        <div id="group-tiers" class="tier-cards"></div>
+        <div id="group-freshness" class="freshness-row"></div>
+      </section>
+
+      <!-- Group Table (clickable) -->
+      <section class="panel panel-scroll">
+        <h2>All Groups <span class="toggle" id="group-sort-toggle">sort: events</span></h2>
+        <div class="table-header group-table-row">
+          <span class="col-name">Group</span>
+          <span class="col-city">City</span>
+          <span class="col-tier">Tier</span>
+          <span class="col-num">Events</span>
+          <span class="col-num">Future</span>
+          <span class="col-num">PROD</span>
+          <span class="col-num">Pending</span>
+          <span class="col-num"></span>
+          <span class="col-age">Last Scrape</span>
+        </div>
+        <div id="group-table"></div>
+      </section>
+
+      <!-- Scatter Timeline -->
+      <section class="panel">
+        <h2>Event Timeline (next 90 days) <span class="toggle" id="scatter-mode-toggle">by: day</span></h2>
+        <div id="scatter-legend" class="chart-legend"></div>
+        <div id="scatter-chart" class="scatter-area"></div>
+        <h3>Gaps &amp; Coverage</h3>
+        <div id="scatter-gaps"></div>
+      </section>
+
+      <!-- State/Region rollup -->
+      <section class="panel">
+        <h2>Events by State/Region</h2>
+        <div id="state-bars" class="chart-area"></div>
+      </section>
+
+      <!-- Regions -->
+      <section class="panel panel-scroll">
+        <h2>Events by City</h2>
+        <div class="table-header region-table-row">
+          <span class="col-name">City</span>
+          <span class="col-num">Events</span>
+          <span class="col-num">PROD</span>
+          <span class="col-num">Venues</span>
+          <span class="col-num"></span>
+        </div>
+        <div id="region-table"></div>
+      </section>
+    </div>
+
+    <!-- RIGHT: Porter + Harvey + Health -->
+    <div class="col-right">
+
+      <!-- Porter Sync -->
+      <section class="panel">
+        <h2>Porter (MongoDB Loader)</h2>
+        <div id="porter-sync" class="metrics-grid"></div>
+        <h3>Load History (events/day)</h3>
+        <div id="porter-history" class="chart-area"></div>
+      </section>
+
+      <!-- Event Timeline -->
+      <section class="panel">
+        <h2>Discovery Timeline (events added/day)</h2>
+        <div id="event-timeline" class="chart-area"></div>
+      </section>
+
+      <!-- Venues & Organizers -->
+      <section class="panel">
+        <h2>Venues &amp; Organizers</h2>
+        <div id="venues-orgs" class="metrics-grid"></div>
+      </section>
+
+      <!-- Harvey Sites -->
+      <section class="panel panel-scroll">
+        <h2>Harvey (Site Scraper) <span class="badge" id="harvey-total">--</span></h2>
+        <div id="harvey-summary" class="metrics-grid"></div>
+        <h3>GCal Community Feeds</h3>
+        <div class="table-header site-table-row">
+          <span class="col-name">Source</span>
+          <span class="col-type">City</span>
+          <span class="col-num">Cals</span>
+          <span class="col-num">Events</span>
+          <span class="col-age">Age</span>
+        </div>
+        <div id="harvey-gcal-sources"></div>
+        <h3>Standalone Sites</h3>
+        <div class="table-header site-table-row">
+          <span class="col-name">Site</span>
+          <span class="col-type">Type</span>
+          <span class="col-num"></span>
+          <span class="col-num">Events</span>
+          <span class="col-age">Age</span>
+        </div>
+        <div id="harvey-standalone"></div>
+      </section>
+
+      <!-- Scraper Health -->
+      <section class="panel">
+        <h2>Scraper Health</h2>
+        <div id="scraper-health"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Group detail drawer -->
+  <div id="group-drawer" class="drawer hidden">
+    <div class="drawer-header">
+      <h2 id="drawer-title">Group Detail</h2>
+      <button id="drawer-close">&times;</button>
+    </div>
+    <div id="drawer-content"></div>
+  </div>
+
+  <script src="app.js?v=6"></script>
+</body>
+</html>

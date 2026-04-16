@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIDI — Discovery</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #eee; font-size: 14px; }
+
+    nav { background: #16213e; display: flex; align-items: center; border-bottom: 2px solid #0f3460; padding: 0 1rem; }
+    nav a { color: #666; text-decoration: none; padding: 0.6rem 1rem; font-size: 0.85rem; border-bottom: 2px solid transparent; }
+    nav a:hover { color: #aaa; }
+    nav a.active { color: #e94560; border-bottom-color: #e94560; }
+    .nav-spacer { flex: 1; }
+    #nav-status { font-size: 0.7rem; color: #555; padding: 0.5rem; }
+
+    .page { padding: 0.75rem 1.5rem; }
+
+    /* Two column layout */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 1000px) { .two-col { grid-template-columns: 1fr; } }
+
+    .panel { background: #16213e; border-radius: 6px; padding: 0.75rem 1rem; border: 1px solid #0f3460; }
+    .panel h2 { font-size: 0.85rem; color: #e94560; margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 1px solid #0f3460; display: flex; justify-content: space-between; align-items: center; }
+    .panel h3 { font-size: 0.7rem; color: #555; text-transform: uppercase; margin: 0.6rem 0 0.3rem; }
+    .badge { font-size: 0.65rem; background: #0f3460; color: #aaa; padding: 0.1rem 0.4rem; border-radius: 3px; }
+
+    .c-ok { color: #4ade80; } .c-warn { color: #facc15; } .c-bad { color: #f87171; }
+    .c-blue { color: #3b82f6; } .c-purple { color: #8b5cf6; } .c-muted { color: #666; }
+
+    /* Source/group rows */
+    .source-row {
+      display: grid; grid-template-columns: 2fr 1fr 0.5fr 0.6fr 0.5fr;
+      gap: 0.3rem; align-items: center; padding: 0.3rem 0.2rem;
+      border-bottom: 1px solid #0a1628; cursor: pointer; font-size: 0.8rem;
+    }
+    .source-row:hover { background: #1a2744; }
+    .source-row .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .source-row .loc { color: #888; font-size: 0.7rem; }
+    .source-row .num { text-align: right; font-weight: bold; }
+    .source-row .age { text-align: right; font-size: 0.7rem; }
+
+    .group-row {
+      display: grid; grid-template-columns: 2.5fr 1fr 0.5fr 0.5fr 0.5fr 0.7fr;
+      gap: 0.3rem; align-items: center; padding: 0.3rem 0.2rem;
+      border-bottom: 1px solid #0a1628; cursor: pointer; font-size: 0.8rem;
+    }
+    .group-row:hover { background: #1a2744; }
+    .group-row .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .tier-badge { font-size: 0.55rem; padding: 0.1rem 0.3rem; border-radius: 2px; text-transform: uppercase; font-weight: bold; }
+    .tier-badge.high { background: rgba(74,222,128,0.15); color: #4ade80; }
+    .tier-badge.normal { background: rgba(59,130,246,0.15); color: #3b82f6; }
+    .tier-badge.dormant { background: rgba(102,102,102,0.15); color: #888; }
+
+    .table-header { font-size: 0.6rem; color: #555; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid #0f3460; padding-bottom: 0.3rem; margin-bottom: 0.2rem; }
+
+    .panel-scroll { max-height: 600px; overflow-y: auto; }
+
+    /* Detail drawer */
+    .detail-panel { display: none; background: #121e38; border: 1px solid #3b82f6; border-radius: 6px; padding: 0.75rem 1rem; margin-top: 0.5rem; }
+    .detail-panel.open { display: block; }
+    .detail-panel h3 { color: #3b82f6; }
+    .detail-close { float: right; background: none; border: 1px solid #555; color: #eee; cursor: pointer; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.8rem; }
+
+    .event-row {
+      display: grid; grid-template-columns: 2fr 0.8fr 1fr 0.7fr 0.6fr;
+      gap: 0.3rem; padding: 0.2rem 0; border-bottom: 1px solid #0a1628; font-size: 0.75rem;
+    }
+    .event-row .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .event-row .date { color: #888; }
+    .event-row .venue { color: #888; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .metrics-row { display: flex; gap: 0.5rem; margin: 0.4rem 0; }
+    .metric { background: #1a1a2e; padding: 0.3rem 0.5rem; border-radius: 3px; text-align: center; min-width: 70px; }
+    .metric .val { font-size: 1rem; font-weight: bold; }
+    .metric .lbl { font-size: 0.55rem; color: #888; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="discovery.html" class="active">Discovery</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="porter.html">Porter</a>
+    <div class="nav-spacer"></div>
+    <span id="nav-status"></span>
+  </nav>
+
+  <div class="page">
+    <div class="two-col">
+
+      <!-- HARVEY (left) -->
+      <div>
+        <section class="panel panel-scroll">
+          <h2>Harvey — Site Sources <span class="badge" id="harvey-badge">--</span></h2>
+          <p style="font-size:0.7rem;color:#555;margin-bottom:0.5rem;">Calendar sites scraped by Harvey. Click any source to see upcoming events.</p>
+
+          <h3>GCal Community Feeds</h3>
+          <div class="table-header source-row">
+            <span>Source</span><span>Location</span><span class="num">Cals</span><span class="num">Events</span><span class="age">Age</span>
+          </div>
+          <div id="harvey-gcal"></div>
+
+          <h3>Standalone Sites</h3>
+          <div class="table-header source-row">
+            <span>Site</span><span>Type</span><span></span><span class="num">Events</span><span class="age">Age</span>
+          </div>
+          <div id="harvey-standalone"></div>
+
+          <div class="detail-panel" id="harvey-detail"></div>
+        </section>
+      </div>
+
+      <!-- BOOKER (right) -->
+      <div>
+        <section class="panel panel-scroll">
+          <h2>Booker — FB Groups <span class="badge" id="booker-badge">--</span></h2>
+          <p style="font-size:0.7rem;color:#555;margin-bottom:0.5rem;">Facebook groups scraped by Booker. Click any group to see events flowing through the pipeline.</p>
+
+          <div id="booker-tiers" style="display:flex;gap:0.5rem;margin-bottom:0.5rem;"></div>
+
+          <div class="table-header group-row">
+            <span>Group</span><span>City</span><span class="num">Future</span><span class="num">PROD</span><span class="num">Pending</span><span class="age">Scraped</span>
+          </div>
+          <div id="booker-groups"></div>
+
+          <div class="detail-panel" id="booker-detail"></div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+const REFRESH = 60000;
+let DATA = null;
+
+async function load() {
+  try { DATA = await (await fetch('data.json?t=' + Date.now())).json(); render(); }
+  catch (e) { console.error(e); }
+}
+
+function render() {
+  if (!DATA) return;
+  const ts = new Date(DATA.generated_at);
+  document.getElementById('nav-status').textContent = `Data: ${Math.round((Date.now() - ts.getTime()) / 60000)}m ago`;
+
+  renderHarvey();
+  renderBooker();
+}
+
+// ── HARVEY ──
+
+function renderHarvey() {
+  const h = DATA.harvey || {};
+  const sources = h.sources || [];
+  const standalone = h.standalone || [];
+  const sum = h.summary || {};
+
+  document.getElementById('harvey-badge').textContent =
+    `${sum.gcalSources || 0} orgs + ${sum.standaloneSites || 0} sites = ${(sum.totalEvents || 0).toLocaleString()} events`;
+
+  document.getElementById('harvey-gcal').innerHTML = sources.map((s, i) => {
+    const age = fmtAge(s.ageHours);
+    const ageCls = s.ageHours === null ? 'c-bad' : s.ageHours < 168 ? 'c-ok' : 'c-warn';
+    return `<div class="source-row" onclick="showHarveyDetail('gcal', ${i})">
+      <span class="name">${s.name}</span>
+      <span class="loc">${s.city}, ${s.state}</span>
+      <span class="num c-muted">${s.subCalendars}</span>
+      <span class="num c-blue">${s.events}</span>
+      <span class="age ${ageCls}">${age}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('harvey-standalone').innerHTML = standalone.map((s, i) => {
+    const age = fmtAge(s.ageHours);
+    const ageCls = s.ageHours === null ? 'c-bad' : s.ageHours < 168 ? 'c-ok' : 'c-warn';
+    return `<div class="source-row" onclick="showHarveyDetail('standalone', ${i})">
+      <span class="name">${s.name}</span>
+      <span class="loc" style="color:#666">${s.type}</span>
+      <span></span>
+      <span class="num c-blue">${s.events}</span>
+      <span class="age ${ageCls}">${age}</span>
+    </div>`;
+  }).join('');
+}
+
+function showHarveyDetail(type, idx) {
+  const list = type === 'gcal' ? DATA.harvey.sources : DATA.harvey.standalone;
+  const src = list[idx];
+  if (!src) return;
+
+  const el = document.getElementById('harvey-detail');
+  const events = src.sampleEvents || [];
+
+  el.innerHTML = `
+    <button class="detail-close" onclick="this.parentElement.classList.remove('open')">&times;</button>
+    <h3>${src.name} ${src.city ? '(' + src.city + ', ' + src.state + ')' : ''}</h3>
+    <div class="metrics-row">
+      <div class="metric"><div class="val c-blue">${src.events}</div><div class="lbl">Total Events</div></div>
+      ${src.subCalendars ? `<div class="metric"><div class="val c-muted">${src.subCalendars}</div><div class="lbl">Sub-Cals</div></div>` : ''}
+      <div class="metric"><div class="val ${fmtAgeCls(src.ageHours)}">${fmtAge(src.ageHours)}</div><div class="lbl">Last Update</div></div>
+    </div>
+    <h3>Upcoming Events (${events.length})</h3>
+    ${events.length === 0 ? '<p style="color:#555;font-size:0.75rem;">No future events found</p>' :
+      `<div class="table-header event-row"><span>Title</span><span>Date</span><span>Venue</span><span>City</span><span>Category</span></div>` +
+      events.map(e => `<div class="event-row">
+        <span class="title" title="${esc(e.title)}">${esc(e.title)}</span>
+        <span class="date">${(e.start_dt || '').slice(0, 10)}</span>
+        <span class="venue" title="${esc(e.venue_name)}">${esc(e.venue_name || '--')}</span>
+        <span class="c-muted">${esc(e.city || '')}</span>
+        <span class="c-muted">${esc(e.category || '')}</span>
+      </div>`).join('')}
+  `;
+  el.classList.add('open');
+}
+
+// ── BOOKER ──
+
+function renderBooker() {
+  const b = DATA.booker;
+  if (!b) return;
+
+  const groups = b.groups || [];
+  const tiers = b.groupTiers || [];
+  const gf = b.groupFreshness || {};
+
+  document.getElementById('booker-badge').textContent =
+    `${gf.total || 0} groups | ${b.funnel?.future || 0} future events`;
+
+  // Tier summary
+  const tierColors = { high: 'c-ok', normal: 'c-blue', dormant: 'c-muted' };
+  document.getElementById('booker-tiers').innerHTML = tiers.map(t =>
+    `<div class="metric"><div class="val ${tierColors[t.tier] || 'c-muted'}">${t.total}</div><div class="lbl">${t.tier} (${t.proven}p)</div></div>`
+  ).join('') +
+    `<div class="metric"><div class="val c-ok">${gf.fresh_1d || 0}</div><div class="lbl">Today</div></div>` +
+    `<div class="metric"><div class="val c-warn">${gf.never_scraped || 0}</div><div class="lbl">Never</div></div>`;
+
+  // Group list — only show groups with events or recent scrapes (hide empty dormant clutter)
+  const visible = groups.filter(g => g.future_events > 0 || g.total_events > 0 || g.last_scraped_at);
+  document.getElementById('booker-groups').innerHTML = visible.map(g => {
+    const age = fmtAge2(g.last_scraped_at);
+    const ageCls = !g.last_scraped_at ? 'c-bad' : age.includes('d') && parseInt(age) > 7 ? 'c-warn' : 'c-ok';
+    return `<div class="group-row" onclick="showBookerDetail(${g.id})">
+      <span class="name" title="${esc(g.name)}">${esc(g.name)}</span>
+      <span class="loc">${esc(g.city || '')}${g.state ? ', ' + g.state : ''}</span>
+      <span class="num c-blue">${g.future_events || 0}</span>
+      <span class="num ${g.prod_synced ? 'c-ok' : 'c-muted'}">${g.prod_synced || 0}</span>
+      <span class="num ${g.pending > 0 ? 'c-purple' : 'c-muted'}">${g.pending || 0}</span>
+      <span class="age ${ageCls}">${age}</span>
+    </div>`;
+  }).join('');
+}
+
+function showBookerDetail(groupId) {
+  const group = DATA.booker.groups.find(g => g.id === groupId);
+  if (!group) return;
+
+  // Find events for this group from the scatter data
+  const events = (DATA.booker.scatter || []).filter(e => e.group_id === groupId);
+
+  const el = document.getElementById('booker-detail');
+  el.innerHTML = `
+    <button class="detail-close" onclick="this.parentElement.classList.remove('open')">&times;</button>
+    <h3>${esc(group.name)}</h3>
+    <div style="font-size:0.75rem;color:#888;margin-bottom:0.4rem;">
+      ${esc(group.city || '')}${group.state ? ', ' + group.state : ''} |
+      <span class="tier-badge ${group.tier}">${group.tier}</span> |
+      Scraped: ${fmtAge2(group.last_scraped_at)} |
+      ${group.consecutive_empty_scrapes || 0} empty runs
+      ${group.url ? ` | <a href="${group.url}" target="_blank" style="color:#3b82f6">FB Group</a>` : ''}
+    </div>
+    <div class="metrics-row">
+      <div class="metric"><div class="val c-muted">${group.total_events || 0}</div><div class="lbl">Total</div></div>
+      <div class="metric"><div class="val c-blue">${group.future_events || 0}</div><div class="lbl">Future</div></div>
+      <div class="metric"><div class="val c-ok">${group.prod_synced || 0}</div><div class="lbl">In PROD</div></div>
+      <div class="metric"><div class="val c-purple">${group.pending || 0}</div><div class="lbl">Pending</div></div>
+    </div>
+    <h3>Future Events from this Group (${events.length})</h3>
+    ${events.length === 0 ? '<p style="color:#555;font-size:0.75rem;">No future events</p>' :
+      `<div class="table-header event-row"><span>Title</span><span>Date</span><span>Venue</span><span>City</span><span>Status</span></div>` +
+      events.map(e => {
+        const sCls = e.pipeline_status === 'prod' ? 'c-ok' : e.pipeline_status === 'ready' ? 'c-blue' : e.pipeline_status === 'pending' ? 'c-purple' : 'c-muted';
+        return `<div class="event-row">
+          <span class="title" title="${esc(e.title)}">${esc(e.title)}</span>
+          <span class="date">${(e.start_dt || '').slice(0, 10)}</span>
+          <span class="venue" title="${esc(e.venue_name)}">${esc(e.venue_name || '--')}</span>
+          <span class="c-muted">${esc(e.city || '')}</span>
+          <span class="${sCls}">${e.pipeline_status}</span>
+        </div>`;
+      }).join('')}
+  `;
+  el.classList.add('open');
+}
+
+// ── Helpers ──
+
+function fmtAge(h) { if (h === null || h === undefined) return 'never'; if (h < 1) return '<1h'; if (h < 24) return h + 'h'; return Math.round(h / 24) + 'd'; }
+function fmtAgeCls(h) { return h === null ? 'c-bad' : h < 168 ? 'c-ok' : 'c-warn'; }
+function fmtAge2(iso) { if (!iso) return 'never'; const ms = Date.now() - new Date(iso).getTime(); const m = Math.round(ms/60000); if (m < 60) return m + 'm'; const h = Math.round(m/60); if (h < 24) return h + 'h'; return Math.round(h/24) + 'd'; }
+function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+load();
+setInterval(load, REFRESH);
+</script>
+</body>
+</html>
