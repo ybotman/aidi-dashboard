@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-25T15:41:07.941Z",
+  "generated_at": "2026-04-25T19:52:11.736Z",
   "health": "YELLOW",
   "scraper": {
     "chrome": "DOWN",
@@ -7732,10 +7732,76 @@
     },
     "porterHistory": [
       {
+        "day": "2026-04-17",
+        "loaded": 67,
+        "in_prod": 0,
+        "countries": 16,
+        "cities": 50,
+        "venues": 64
+      },
+      {
         "day": "2026-04-16",
-        "loaded": 549,
-        "venues": 0,
-        "in_prod": 0
+        "loaded": 134,
+        "in_prod": 0,
+        "countries": 11,
+        "cities": 92,
+        "venues": 118
+      },
+      {
+        "day": "2026-04-02",
+        "loaded": 3,
+        "in_prod": 3,
+        "countries": 2,
+        "cities": 3,
+        "venues": 3
+      },
+      {
+        "day": "2026-04-01",
+        "loaded": 338,
+        "in_prod": 267,
+        "countries": 11,
+        "cities": 98,
+        "venues": 193
+      },
+      {
+        "day": "2026-03-31",
+        "loaded": 3,
+        "in_prod": 1,
+        "countries": 1,
+        "cities": 2,
+        "venues": 2
+      },
+      {
+        "day": "2026-02-07",
+        "loaded": 1,
+        "in_prod": 1,
+        "countries": 1,
+        "cities": 1,
+        "venues": 1
+      },
+      {
+        "day": "2026-02-06",
+        "loaded": 2,
+        "in_prod": 2,
+        "countries": 2,
+        "cities": 2,
+        "venues": 2
+      },
+      {
+        "day": "2026-02-04",
+        "loaded": 21,
+        "in_prod": 21,
+        "countries": 8,
+        "cities": 18,
+        "venues": 20
+      },
+      {
+        "day": "2026-02-03",
+        "loaded": 4,
+        "in_prod": 4,
+        "countries": 3,
+        "cities": 4,
+        "venues": 4
       }
     ],
     "loadByCountry": [
@@ -8022,7 +8088,7 @@
         "category": "MILONGA",
         "venue_name": "Evergreen Theatre 1705 Poplar Ave, Memphis, TN 38104",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Memphis Argentine Tango"
       },
       {
@@ -8036,7 +8102,7 @@
         "category": "CLASS",
         "venue_name": "Evergreen Theatre 1705 Poplar Ave, Memphis, TN 38104",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Memphis Argentine Tango"
       },
       {
@@ -8050,7 +8116,7 @@
         "category": "MILONGA",
         "venue_name": "Memphis Chinese Community Center",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Memphis Argentine Tango"
       },
       {
@@ -8064,7 +8130,7 @@
         "category": "MILONGA",
         "venue_name": "Evergreen Theatre 1705 Poplar Ave, Memphis, TN 38104",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Memphis Argentine Tango"
       },
       {
@@ -8078,7 +8144,7 @@
         "category": "CLASS",
         "venue_name": "Perth Town Hall",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Perth Tango Club"
       },
       {
@@ -8092,7 +8158,7 @@
         "category": "MILONGA",
         "venue_name": "Maroochydore Masonic Lodge 211 Main St Maroochydore",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "The Tango Club (Gold Coast)"
       },
       {
@@ -8106,7 +8172,7 @@
         "category": "MILONGA",
         "venue_name": "Hotel Vincci Zaragoza Zentro",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "TANGO EN CORDOBA"
       },
       {
@@ -8120,7 +8186,7 @@
         "category": "MILONGA",
         "venue_name": "Scuola Partenopea Maestri Principianti Assoluti",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "NAPOLI TANGO"
       },
       {
@@ -8134,7 +8200,7 @@
         "category": "MILONGA",
         "venue_name": "Avernum Relais",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "NAPOLI TANGO"
       },
       {
@@ -8148,7 +8214,7 @@
         "category": "CLASS",
         "venue_name": "Hardt 29, 47877 Willich, Germany",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango Tanzen Köln"
       },
       {
@@ -8162,7 +8228,7 @@
         "category": "MILONGA",
         "venue_name": "INSEL",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango Tanzen Köln"
       },
       {
@@ -8176,7 +8242,7 @@
         "category": "MILONGA",
         "venue_name": "Tango Chocolate",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Hamburg"
       },
       {
@@ -8190,7 +8256,7 @@
         "category": "MILONGA",
         "venue_name": "Teehaus Große Wallanalagen Hamburg",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Hamburg"
       },
       {
@@ -8204,7 +8270,7 @@
         "category": "MILONGA",
         "venue_name": "225 Rue tourmaline, 13510 Éguilles, France",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Marseille"
       },
       {
@@ -8218,7 +8284,7 @@
         "category": "PRACTICA",
         "venue_name": "Fitness City",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Marseille"
       },
       {
@@ -8232,7 +8298,7 @@
         "category": "MILONGA",
         "venue_name": "9 Rue de la Platière, 69001 Lyon, France",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango à Lyon"
       },
       {
@@ -8246,7 +8312,7 @@
         "category": "MILONGA",
         "venue_name": "Tiny Danse",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango à Lyon"
       },
       {
@@ -8260,7 +8326,7 @@
         "category": "FESTIVAL",
         "venue_name": "Bailongo Montréal",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango Montréal"
       },
       {
@@ -8274,7 +8340,7 @@
         "category": "MILONGA",
         "venue_name": "Dance Flame Kalamata",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Vancouver Argentine Tango"
       },
       {
@@ -8288,7 +8354,7 @@
         "category": "CLASS",
         "venue_name": "Dom Polski w Seattle_Polish Cultural Center",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Vancouver Argentine Tango"
       },
       {
@@ -8302,7 +8368,7 @@
         "category": "MILONGA",
         "venue_name": "Holy Trinity Ukrainian Orthodox Cathedral",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Vancouver Argentine Tango"
       },
       {
@@ -8316,7 +8382,7 @@
         "category": "MILONGA",
         "venue_name": "Downtown Victoria",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango Vancouver Island"
       },
       {
@@ -8330,7 +8396,7 @@
         "category": "MILONGA",
         "venue_name": "744 Mt Pleasant Rd, Toronto, ON, Canada, Ontario M4S 2N6",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Toronto Tango Junkies"
       },
       {
@@ -8344,7 +8410,7 @@
         "category": "CLASS",
         "venue_name": "Bulent & Lina Tango",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Toronto Tango Junkies"
       },
       {
@@ -8358,7 +8424,7 @@
         "category": "MILONGA",
         "venue_name": "Dance Annex 527 Bloor St West , Toronto, ON, Canada, Ontario",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Argentine Tango Toronto Canada"
       },
       {
@@ -8372,7 +8438,7 @@
         "category": "MILONGA",
         "venue_name": "KulturBistro Solothurn",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango argentino in Zürich"
       },
       {
@@ -8386,7 +8452,7 @@
         "category": "MILONGA",
         "venue_name": "Hohe-Flum-Strasse 44, 79650 Schopfheim, Germany",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango argentino in Zürich"
       },
       {
@@ -8400,7 +8466,7 @@
         "category": "MILONGA",
         "venue_name": "Zofingia Bern",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango argentino in Zürich"
       },
       {
@@ -8414,7 +8480,7 @@
         "category": "MARATHON",
         "venue_name": "Oddział Warszawski SARP",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "El Gordo Tango Marathon Warsaw"
       },
       {
@@ -8428,7 +8494,7 @@
         "category": "MILONGA",
         "venue_name": "Rua Maria 73, 1170 - 211 Lisbon, Portugal",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "What's Up Tango In Lisbon"
       },
       {
@@ -8442,7 +8508,7 @@
         "category": "MILONGA",
         "venue_name": "Kedelhallen by Tango-CPH",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Copenhagen Tango Intermezzo"
       },
       {
@@ -8456,7 +8522,7 @@
         "category": "MILONGA",
         "venue_name": "Midsommargården",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Stockholm"
       },
       {
@@ -8470,7 +8536,7 @@
         "category": "MILONGA",
         "venue_name": "Danzarín",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Stockholm"
       },
       {
@@ -8484,7 +8550,7 @@
         "category": "MILONGA",
         "venue_name": "al Teatro Tango Academia ",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango Prague / Tango Czech Republic"
       },
       {
@@ -8498,7 +8564,7 @@
         "category": "MILONGA",
         "venue_name": "EL DORADO - Kerkstraat 251, 1851 Grimbergen, Belgium",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "BRUXELL'Aires (Tango in Brussels)"
       },
       {
@@ -8512,7 +8578,7 @@
         "category": "CLASS",
         "venue_name": "Zacchera Hotels",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "La Tangueria Brussels"
       },
       {
@@ -8526,7 +8592,7 @@
         "category": "MILONGA",
         "venue_name": "Kaleidoscoop",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Belgium"
       },
       {
@@ -8540,7 +8606,7 @@
         "category": "MILONGA",
         "venue_name": "Salle Jean-Jaures - Ancienne Mairie d'Hellemmes - Place de la Republique - 59260 Lille - Hellemmes , 59260 Lille, France",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Belgium"
       },
       {
@@ -8554,7 +8620,7 @@
         "category": "MILONGA",
         "venue_name": "Life",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Belgium"
       },
       {
@@ -8568,7 +8634,7 @@
         "category": "MILONGA",
         "venue_name": "Brückenring 19, 86916 Kaufering",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango München"
       },
       {
@@ -8582,7 +8648,7 @@
         "category": "MILONGA",
         "venue_name": "Landsberger Straße 18, Gilching",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango In Munich - Community"
       },
       {
@@ -8596,7 +8662,7 @@
         "category": "MILONGA",
         "venue_name": "Ballhaus Ulm",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango Austria"
       },
       {
@@ -8610,7 +8676,7 @@
         "category": "FESTIVAL",
         "venue_name": "Abano Terme Padova",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Where to dance Tango in Vienna tonight?"
       },
       {
@@ -8624,7 +8690,7 @@
         "category": "MILONGA",
         "venue_name": "Some Like It Hot",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango Vienna"
       },
       {
@@ -8638,7 +8704,7 @@
         "category": "WORKSHOP",
         "venue_name": "Maria-Lassnig-Straße 33, 1100",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango Vienna"
       },
       {
@@ -8652,7 +8718,7 @@
         "category": "MILONGA",
         "venue_name": "Hofburg Imperial Palace, Heldenplatz, 1010, Vienna, Austria",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "TANGO ARGENTINO @ TU WIEN & ISTA"
       },
       {
@@ -8666,7 +8732,7 @@
         "category": "MILONGA",
         "venue_name": "Hofburg Imperial Palace, Heldenplatz, 1010, Vienna, Austria",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "TANGO ARGENTINO @ TU WIEN & ISTA"
       },
       {
@@ -8680,7 +8746,7 @@
         "category": "MILONGA",
         "venue_name": "City Hall (Rathaus), Lichtenfelsgasse 2, 1010 Wien, Austria",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "TANGO ARGENTINO @ TU WIEN & ISTA"
       },
       {
@@ -8694,7 +8760,7 @@
         "category": "MILONGA",
         "venue_name": "Roelof Hartplein 2A, 1071 TT Amsterdam, Nederland",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Amsterdam"
       },
       {
@@ -8708,7 +8774,7 @@
         "category": "PRACTICA",
         "venue_name": "Tussen de Bogen 63, 1013 JB Amsterdam, Nederland",
         "has_venue": 1,
-        "load_status": "new",
+        "load_status": "test",
         "group_name": "Tango in Amsterdam"
       }
     ],
@@ -12380,7 +12446,7 @@
         "subCalendars": 1,
         "events": 5290,
         "lastModified": "2026-04-25T04:08:10.464Z",
-        "ageHours": 12
+        "ageHours": 16
       },
       {
         "name": "Capital Tangueros (DC/Baltimore/NoVA)",
@@ -12391,7 +12457,7 @@
         "subCalendars": 1,
         "events": 4530,
         "lastModified": "2026-04-24T19:25:19.661Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "All Seattle Tango",
@@ -12402,7 +12468,7 @@
         "subCalendars": 1,
         "events": 3145,
         "lastModified": "2026-04-24T19:25:23.857Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Austin TX — Milongas & Practicas",
@@ -12413,7 +12479,7 @@
         "subCalendars": 1,
         "events": 2827,
         "lastModified": "2026-04-24T19:25:30.047Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Austin TX — Classes, Festivals & Workshops",
@@ -12424,7 +12490,7 @@
         "subCalendars": 1,
         "events": 2422,
         "lastModified": "2026-04-24T19:25:37.102Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Wasatch Tango (Salt Lake City)",
@@ -12435,7 +12501,7 @@
         "subCalendars": 1,
         "events": 2323,
         "lastModified": "2026-04-24T19:25:26.300Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Colorado — Cal 1 (largest)",
@@ -12446,7 +12512,7 @@
         "subCalendars": 1,
         "events": 1445,
         "lastModified": "2026-04-08T16:48:07.809Z",
-        "ageHours": 407
+        "ageHours": 411
       },
       {
         "name": "Tango Prague — Workshops & Seminars",
@@ -12457,7 +12523,7 @@
         "subCalendars": 1,
         "events": 1075,
         "lastModified": "2026-04-25T04:05:25.582Z",
-        "ageHours": 12
+        "ageHours": 16
       },
       {
         "name": "Tango Colorado — Master Calendar",
@@ -12468,7 +12534,7 @@
         "subCalendars": 1,
         "events": 760,
         "lastModified": "2026-04-24T19:25:48.485Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Portland Tango — Milongas",
@@ -12479,7 +12545,7 @@
         "subCalendars": 1,
         "events": 588,
         "lastModified": "2026-04-24T19:25:28.125Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Pittsburgh Tangueros — Master Calendar",
@@ -12490,7 +12556,7 @@
         "subCalendars": 1,
         "events": 525,
         "lastModified": "2026-04-24T19:23:13.972Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Minnesota — Cal 1 (largest)",
@@ -12501,7 +12567,7 @@
         "subCalendars": 1,
         "events": 457,
         "lastModified": "2026-04-24T19:25:39.806Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Prague — Concerts & Cultural",
@@ -12512,7 +12578,7 @@
         "subCalendars": 1,
         "events": 447,
         "lastModified": "2026-04-25T04:06:37.036Z",
-        "ageHours": 12
+        "ageHours": 16
       },
       {
         "name": "Tango Colorado — Cal 3",
@@ -12523,7 +12589,7 @@
         "subCalendars": 1,
         "events": 385,
         "lastModified": "2026-04-24T19:25:49.048Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tucson Tango Calendar",
@@ -12534,7 +12600,7 @@
         "subCalendars": 1,
         "events": 322,
         "lastModified": "2026-04-24T19:25:29.691Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Pittsburgh Tangueros — Sub Cal 2",
@@ -12545,7 +12611,7 @@
         "subCalendars": 1,
         "events": 267,
         "lastModified": "2026-04-24T19:25:46.825Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Portland Tango — Classes",
@@ -12556,7 +12622,7 @@
         "subCalendars": 1,
         "events": 241,
         "lastModified": "2026-04-24T19:25:28.683Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Boston — Master Calendar",
@@ -12567,7 +12633,7 @@
         "subCalendars": 1,
         "events": 237,
         "lastModified": "2026-04-24T19:23:15.470Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Portland Tango — Workshops",
@@ -12578,7 +12644,7 @@
         "subCalendars": 1,
         "events": 221,
         "lastModified": "2026-04-24T19:25:29.171Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Boston — Sub Cal 2",
@@ -12589,7 +12655,7 @@
         "subCalendars": 1,
         "events": 201,
         "lastModified": "2026-04-24T19:25:47.702Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Colorado — Cal 4",
@@ -12600,7 +12666,7 @@
         "subCalendars": 1,
         "events": 186,
         "lastModified": "2026-04-24T19:23:20.138Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Minnesota — Cal 2",
@@ -12611,7 +12677,7 @@
         "subCalendars": 1,
         "events": 179,
         "lastModified": "2026-04-24T19:25:45.441Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Pittsburgh Tangueros — Sub Cal 3",
@@ -12622,7 +12688,7 @@
         "subCalendars": 1,
         "events": 178,
         "lastModified": "2026-04-24T19:23:14.762Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Minnesota — Cal 3",
@@ -12633,7 +12699,7 @@
         "subCalendars": 1,
         "events": 155,
         "lastModified": "2026-04-24T19:25:45.905Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Pittsburgh Tangueros — Sub Cal 4",
@@ -12644,7 +12710,7 @@
         "subCalendars": 1,
         "events": 151,
         "lastModified": "2026-04-24T19:25:47.198Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Colorado — Cal 5",
@@ -12655,7 +12721,7 @@
         "subCalendars": 1,
         "events": 148,
         "lastModified": "2026-04-24T19:25:49.399Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Minnesota — Cal 4",
@@ -12666,7 +12732,7 @@
         "subCalendars": 1,
         "events": 139,
         "lastModified": "2026-04-24T19:25:46.144Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Phoenix Argentine Tango — Classes & Practicas",
@@ -12677,7 +12743,7 @@
         "subCalendars": 1,
         "events": 126,
         "lastModified": "2026-04-24T19:25:39.508Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Minnesota — Cal 5",
@@ -12688,7 +12754,7 @@
         "subCalendars": 1,
         "events": 119,
         "lastModified": "2026-04-24T19:25:46.387Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Minnesota — Cal 6",
@@ -12699,7 +12765,7 @@
         "subCalendars": 1,
         "events": 118,
         "lastModified": "2026-04-24T19:23:13.024Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Minnesota — Cal 7",
@@ -12710,7 +12776,7 @@
         "subCalendars": 1,
         "events": 115,
         "lastModified": "2026-04-24T19:23:13.255Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Minnesota — Cal 8",
@@ -12721,7 +12787,7 @@
         "subCalendars": 1,
         "events": 115,
         "lastModified": "2026-04-24T19:25:46.616Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Minnesota — Cal 9",
@@ -12732,7 +12798,7 @@
         "subCalendars": 1,
         "events": 109,
         "lastModified": "2026-04-24T19:23:13.758Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Colorado — Cal 6",
@@ -12743,7 +12809,7 @@
         "subCalendars": 1,
         "events": 93,
         "lastModified": "2026-04-24T19:25:49.630Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Colorado — Cal 7",
@@ -12754,7 +12820,7 @@
         "subCalendars": 1,
         "events": 89,
         "lastModified": "2026-04-24T19:25:49.813Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Portland Tango — Organizer Look-ahead",
@@ -12765,7 +12831,7 @@
         "subCalendars": 1,
         "events": 84,
         "lastModified": "2026-04-24T19:25:29.442Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Phoenix Argentine Tango — Milongas & Workshops",
@@ -12776,7 +12842,7 @@
         "subCalendars": 1,
         "events": 81,
         "lastModified": "2026-04-24T19:25:39.290Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Colorado — Cal 8",
@@ -12787,7 +12853,7 @@
         "subCalendars": 1,
         "events": 81,
         "lastModified": "2026-04-24T19:25:50.015Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Colorado — Cal 9",
@@ -12798,7 +12864,7 @@
         "subCalendars": 1,
         "events": 81,
         "lastModified": "2026-04-24T19:23:21.274Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Colorado — Cal 10",
@@ -12809,7 +12875,7 @@
         "subCalendars": 1,
         "events": 74,
         "lastModified": "2026-04-24T19:23:21.513Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "DanceGumbo (Durham/Triangle NC - multi-dance)",
@@ -12820,7 +12886,7 @@
         "subCalendars": 1,
         "events": 50,
         "lastModified": "2026-04-24T19:23:21.718Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Boston — Sub Cal 3",
@@ -12831,7 +12897,7 @@
         "subCalendars": 1,
         "events": 33,
         "lastModified": "2026-04-24T19:25:48.059Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Tango Society of Boston — Sub Cal 4",
@@ -12842,7 +12908,7 @@
         "subCalendars": 1,
         "events": 30,
         "lastModified": "2026-04-24T19:25:48.284Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "TangoPulsus (San Juan PR)",
@@ -12853,7 +12919,7 @@
         "subCalendars": 1,
         "events": 28,
         "lastModified": "2026-04-24T19:23:00.180Z",
-        "ageHours": 20
+        "ageHours": 24
       },
       {
         "name": "Pittsburgh Tangueros — Sub Cal 5",
@@ -12864,7 +12930,7 @@
         "subCalendars": 1,
         "events": 22,
         "lastModified": "2026-04-24T19:25:47.496Z",
-        "ageHours": 20
+        "ageHours": 24
       }
     ],
     "standalone": [
@@ -12902,14 +12968,14 @@
         "type": "web_page",
         "events": 101,
         "lastModified": "2026-04-01 05:41:06",
-        "ageHours": 582
+        "ageHours": 586
       }
     ],
     "summary": {
       "gcalSources": 45,
       "standaloneSites": 4,
       "totalSubCalendars": 45,
-      "fresh_1d": 44,
+      "fresh_1d": 3,
       "fresh_7d": 44,
       "stale": 1,
       "noData": 0,
